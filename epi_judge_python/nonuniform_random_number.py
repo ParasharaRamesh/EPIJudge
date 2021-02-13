@@ -1,17 +1,30 @@
 import collections
 import functools
 import math
+import random
 from typing import List
+import bisect
 
 from test_framework import generic_test
 from test_framework.random_sequence_checker import run_func_with_retries
 from test_framework.test_utils import enable_executor_hook
 
 
-def nonuniform_random_number_generation(values: List[int],
-                                        probabilities: List[float]) -> int:
-    # TODO - you fill in here.
-    return 0
+def nonuniform_random_number_generation(values: List[int],probabilities: List[float]) -> int:
+    cummulativeProbabilities = []
+    for i,prob in enumerate(probabilities):
+        probSum = 0
+        for j in range(i+1):
+            probSum += probabilities[j]
+        cummulativeProbabilities.append(probSum)
+    chance = random.random()
+
+    # for i,cumProb in enumerate(cummulativeProbabilities):
+    #     if cummulativeProbabilities[i] > chance:
+    #         return values[i]
+    #can do binary search
+    ind = bisect.bisect(cummulativeProbabilities, chance)
+    return values[ind]
 
 
 @enable_executor_hook

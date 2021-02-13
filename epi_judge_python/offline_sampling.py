@@ -1,3 +1,4 @@
+import copy
 import functools
 from typing import List
 
@@ -6,11 +7,45 @@ from test_framework.random_sequence_checker import (
     binomial_coefficient, check_sequence_is_uniformly_random,
     compute_combination_idx, run_func_with_retries)
 from test_framework.test_utils import enable_executor_hook
+import random
+from itertools import compress
 
+def getBinaryRepresentation(i, n, cache):
+    binaryRep = []
+    while i > 0:
+        binaryRep.append(i%2)
+        i = i//2
+    k = binaryRep.count(1)
+    res = [0]*(n-len(binaryRep)) + list(reversed(binaryRep))
+    if k not in cache:
+        cache[k] = [res]
+    else:
+        cache[k].append(res)
+
+    return cache
+
+
+def generateAllBinaryNumbersWithKOnes(k, n):
+    if k == 0:
+        return [0]*len(n)
+
+    cache = {}
+    for i in range(1, 2**n):
+        cache = getBinaryRepresentation(i, n, cache)
+    return cache[k]
+
+#naive approach
+# def random_sampling(k: int, A: List[int]) -> None:
+#     # TODO - you fill in here.
+#     allKOnes = generateAllBinaryNumbersWithKOnes(k, len(A))
+#     sample = random.choice(allKOnes)
+#     randomSample = list(compress(A, sample))
+#     return randomSample
 
 def random_sampling(k: int, A: List[int]) -> None:
-    # TODO - you fill in here.
-    return
+    for i in range(k):
+        randIndex = random.randint(i,len(A)-1)
+        A[i], A[randIndex] = A[randIndex], A[i]
 
 
 @enable_executor_hook
@@ -41,7 +76,4 @@ def random_sampling_wrapper(executor, k, A):
 
 
 if __name__ == '__main__':
-    exit(
-        generic_test.generic_test_main('offline_sampling.py',
-                                       'offline_sampling.tsv',
-                                       random_sampling_wrapper))
+    exit(generic_test.generic_test_main('offline_sampling.py','offline_sampling.tsv',random_sampling_wrapper))

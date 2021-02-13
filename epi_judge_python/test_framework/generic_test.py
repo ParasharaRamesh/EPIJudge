@@ -56,7 +56,6 @@ def generic_test_main(test_file,
               file=sys.stderr)
         return TestResult.RUNTIME_ERROR
 
-
 def run_tests(handler, config, res_printer):
     test_data = split_tsv_file(
         os.path.join(config.test_data_dir, config.test_data_file))
