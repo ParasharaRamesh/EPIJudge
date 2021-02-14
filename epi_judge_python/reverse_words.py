@@ -7,7 +7,7 @@ from collections import deque
 # Assume s is a list of strings, each of which is of length 1, e.g.,
 # ['r', 'a', 'm', ' ', 'i', 's', ' ', 'c', 'o', 's', 't', 'l', 'y'].
 #word ending indices [12,5,2]
-def reverse_words(s):
+def reverse_words_old(s):
     copyS = s[:]
     no_of_words = 1
     word_ending_indices = deque()
@@ -38,6 +38,31 @@ def reverse_words(s):
         s.pop(firstWordEnd +1)
 
     return s
+
+def reverse_range(s, start, end):
+    while start < end:
+        s[start], s[end] = s[end], s[start]
+        start +=1
+        end -=1
+    return
+
+def reverse_words(s):
+    #reverse everything
+    s.reverse()
+
+    #reverse word by word
+    ranges = [[0]]
+    for i, ch in enumerate(s):
+        if ch == " ":
+            ranges[-1].append(i-1)
+            ranges.append([i+1])
+
+    ranges[-1].append(len(s)-1)
+    for r in ranges:
+        reverse_range(s, r[0], r[1])
+
+    return
+
 
 
 
