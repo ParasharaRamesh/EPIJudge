@@ -54,6 +54,10 @@ def substring_match(t: str, s: str) -> int:
 
 if __name__ == '__main__':
     # rabin karp testing
+    ''' 
+        Average running time: 92us
+        Median running time: 14us
+    '''
     # print(compute_encoding("asdf"))
     # print(compute_hash({'f': '0', 'a': '1', 'd': '2', 's': '3'}, "faadfsf"))
     # print(rabin_karp("acgtgcacacagtgc","tgca"))
