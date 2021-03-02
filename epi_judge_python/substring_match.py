@@ -104,149 +104,10 @@ def kmp(t, s):
 
     return -1
 
-
-# Approach 3
-def constructBadCharacterMap(s):
-    badCharacterMap = dict()
-    m = len(s)
-    for i, ch in enumerate(s):
-        if ch not in badCharacterMap:
-            badCharacterMap[ch] = [m - 1 - i]
-        else:
-            badCharacterMap[ch].insert(0, m - 1 - i)
-    return badCharacterMap
-
-
-def constructGoodSuffixList(s, badCharacterMap):
-    '''
-    there are 3 cases here:
-    1. there is a full text match with the suffix from pos i+1 onwards in some part of the prefix ( Here we are doing only weaker version)
-        - the stronger version requires us to rather check the first occurence of the entire string which matches with that substring and also check the offending mismatched character as well( make sure it isnt the same one)
-        - if stronger version doesnt exist then just choose the first stronger version if exists or the first match ( to make things simpler)
-    2. if there is a prefix of s which matches with some suffix of s
-    3. there is no suffix of the suffix which matches with the pattern in which case we can skip by |s|
-    '''
-
-    goodSuffixList = deque([0])
-    m = len(s)
-    i = m - 2
-    while i >= 0:
-        lastCh = s[-1]
-        # the boundary is from start : i (prefix) | i+1 : end ( suffix)
-        boundaryPos = m - 1 - i
-        prefix = s[:i + 1]
-        suffix = s[i + 1:]
-
-        skipLengths = badCharacterMap[lastCh]
-        posOfLastChar = deque()
-        for skip in skipLengths:
-            if boundaryPos <= skip:
-                posOfLastChar.appendleft(m - 1 - skip)
-
-        # now do a character by character match
-        if len(posOfLastChar) == 0:
-            goodSuffixList.appendleft(0)
-        else:
-            lastCharPos = None
-            posOfFirstChar = None
-
-            # make sure that it was a full text match ( strong version)
-            k = len(posOfLastChar) -1
-            #keep iterating until we find a sub string match
-            while k >=0 and posOfLastChar[k] <= i:
-                end = posOfLastChar[k]
-                beg = end - len(suffix) + 1
-                if s[beg: end + 1] == suffix:
-                    lastCharPos = posOfLastChar[k]
-                    posOfFirstChar = lastCharPos - len(suffix) + 1
-                    break
-                k -= 1
-
-            if posOfFirstChar!= None and lastCharPos!= None:
-                #if there is a substring match
-                currentBestSkip = m - 1 - lastCharPos
-                goodSuffixList.appendleft(currentBestSkip)
-            else:
-                # check if there are prefix matches
-                # pick the one closest to the prefix <= i from that list of lastchar positions and save that in a var j
-
-                lastCharPos = j = posOfLastChar[0]
-                if lastCharPos <= i:
-                    while j >= 0 and s[j] == s[m - 1 - lastCharPos + j]:
-                        j -= 1
-
-                    if j == -1:
-                        # it is a prefix and things matched
-                        goodSuffixList.appendleft(m - 1 - lastCharPos)
-                    else:
-                        # no prefix
-                        goodSuffixList.appendleft(m)
-                else:
-                    # no prefix
-                    goodSuffixList.appendleft(m)
-
-        i -= 1
-    # for the first character in s it is 0
-    goodSuffixList.appendleft(0)
-    return list(goodSuffixList)
-
-
-def precompute(s):
-    badCharacterMap = constructBadCharacterMap(s)
-    return badCharacterMap, constructGoodSuffixList(s, badCharacterMap)
-
-def computeBadCharacterSkip(badCharacterMap, badCharacter, countOfMatchedSoFar, m):
-    if badCharacter not in badCharacterMap:
-        return m - countOfMatchedSoFar
-    else:
-        skipList = badCharacterMap[badCharacter]
-        for skip in skipList:
-            if countOfMatchedSoFar < skip:
-                return skip - countOfMatchedSoFar
-        return 0
-
-
-def computeGoodSuffixSkip(goodSuffixList, indexInSWhichDidntMatch):
-    return goodSuffixList[-1-indexInSWhichDidntMatch]
-
-
-def boyer_moore_horspool(t, s):
-    # do the precomputation and get the bad character map + good suffix array
-    badCharacterMap, goodSuffixList = precompute(s)
-
-    # lengths
-    n = len(t)
-    m = len(s)
-
-    # do the matching right to left
-    i = 0
-    j = m - 1
-    while 0 <= i <= n - m:
-        compare = t[i:i+m]
-        while 0 <= j < m and t[i + j] == s[j]:
-            j -= 1
-
-        if j == -1:
-            # all characters matched
-            return i
-        else:
-            # compute the skips
-            badCharacterSkip = computeBadCharacterSkip(badCharacterMap, t[i + j], m - 1 - j, m)
-            goodSuffixSkip = computeGoodSuffixSkip(goodSuffixList,  m - 1 - j)
-            # get the better skip between badCharacter, good suffix and a simple unitary skip
-            actualSkip = max(badCharacterSkip, goodSuffixSkip, 1)
-            # do the skip
-            i += actualSkip
-            j = m - 1
-
-    return -1
-
-
 def substring_match(t: str, s: str) -> int:
     # s is is the search string, t is the total string
     # return rabin_karp(t,s)
     return kmp(t, s)
-    # return boyer_moore_horspool(t, s)
 
 
 if __name__ == '__main__':
@@ -268,18 +129,6 @@ if __name__ == '__main__':
     '''
     print(construct_prefix("AAA"))
     print(kmp("BAABBAABAAABS","AAA"))
-
-    # boyer moore horspool testing
-    '''
-        Average running time: ? us
-        Median running time: ? us
-    '''
-    # print(precompute("AAA"))
-    # print(boyer_moore_horspool("BAAAA", "AAA"))
-    # # print(precompute("DAAA"))
-    # print(boyer_moore_horspool("DBAAAA", "AAA"))
-    # print(precompute("GAG"))
-    # print(boyer_moore_horspool("GATACCCATCGAGTCGGATCGAGT", "GAG"))
 
     # actual test cases
     exit(generic_test.generic_test_main('substring_match.py', 'substring_match.tsv', substring_match))
