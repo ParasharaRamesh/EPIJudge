@@ -6,10 +6,61 @@ from test_framework import generic_test
 from test_framework.test_failure import TestFailure
 from test_framework.test_utils import enable_executor_hook
 
+#None if there is no cycle
+#node at start of the cycle if cycle is present
 
 def has_cycle(head: ListNode) -> Optional[ListNode]:
-    # TODO - you fill in here.
-    return None
+    #base cases
+    if head == None:
+        #nothing
+        return None
+    if head.next == None:
+        #one element
+        return None
+    if head.next.next == None:
+        #two elements
+        return None
+    if head.next.next == head:
+        #two elements cycle
+        return head
+
+    #get the meeting point
+    slow = head
+    fast = head
+    meet = None
+    while slow!=fast:
+        if slow.next:
+            slow = slow.next
+
+        if fast.next and fast.next.next:
+            fast = fast.next.next
+        else:
+            #it is a singly linked list
+            return None
+
+    #set meeting point
+    meet = slow
+
+    #get the length of the loop L
+    curr = meet.next
+    L = 1
+    while curr!=meet:
+        curr = curr.next
+        L+=1
+
+    #have two pointers
+    start = afterL = head
+    i = 0
+    while i<=L:
+        afterL= afterL.next
+        i+=1
+
+    #move start and afterL one by one until they match
+    while start != afterL:
+        start = start.next
+        afterL = afterL.next
+
+    return start
 
 
 @enable_executor_hook
