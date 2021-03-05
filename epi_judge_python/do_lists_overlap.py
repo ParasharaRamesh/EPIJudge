@@ -6,11 +6,35 @@ from test_framework import generic_test
 from test_framework.test_failure import TestFailure
 from test_framework.test_utils import enable_executor_hook
 
+from is_list_cyclic import get_cycle_if_present
+from do_terminated_lists_overlap import overlapping_no_cycle_lists
+
 
 def overlapping_lists(l0: ListNode, l1: ListNode) -> Optional[ListNode]:
-    # TODO - you fill in here.
-    return None
+    s0, L0 = get_cycle_if_present(l0)
+    s1, L1 = get_cycle_if_present(l1)
+    # if one has cycle and the other doesnt then they dont meet
+    if (s0 == None and s1 != None) or (s0 != None and s1 == None):
+        return None
+    # if both of them dont have cycles reuse the previous implementation
+    if s0 == None and s1 == None:
+        return overlapping_no_cycle_lists(l0,l1)
+    # if both of them have cycles of different lengths they dont meet
+    if L0 != L1:
+        return None
+    # if both of them have cycles of same lengths then get the starting points of both and see if they ever match
+    if L0 == L1:
+        i = 1
+        curr = s0
+        while i <= L1 and id(curr) != id(s1):
+            curr = curr.next
+            i+=1
 
+        if id(curr) == id(s1):
+            #if they match while traversing in the cycle
+            return curr
+        elif i == L1:
+            return None
 
 @enable_executor_hook
 def overlapping_lists_wrapper(executor, l0, l1, common, cycle0, cycle1):

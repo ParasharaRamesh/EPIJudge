@@ -6,60 +6,56 @@ from test_framework import generic_test
 from test_framework.test_failure import TestFailure
 from test_framework.test_utils import enable_executor_hook
 
-#None if there is no cycle
-#node at start of the cycle if cycle is present
 
-def has_cycle(head: ListNode) -> Optional[ListNode]:
-    #base cases
+def get_cycle_if_present(head):
+    # base cases
     if head == None:
-        #nothing
-        return None
+        # nothing
+        return None, 0
     if head.next == None:
-        #one element
-        return None
-    if head.next.next == None:
-        #two elements
-        return None
-    if head.next.next == head:
-        #two elements cycle
-        return head
+        # one element
+        return None, 0
 
-    #get the meeting point
+    # get the meeting point
     slow = head
-    fast = head
+    fast = head.next
     meet = None
-    while slow!=fast:
-        if slow.next:
+    while id(slow) != id(fast):
+        if slow.next and fast.next and fast.next.next:
             slow = slow.next
-
-        if fast.next and fast.next.next:
             fast = fast.next.next
         else:
-            #it is a singly linked list
-            return None
-
-    #set meeting point
+            # it is a singly linked list
+            return None, 0
+    # set meeting point
     meet = slow
 
-    #get the length of the loop L
+    # get the length of the loop L
     curr = meet.next
     L = 1
-    while curr!=meet:
+    while id(curr) != id(meet):
         curr = curr.next
-        L+=1
+        L += 1
 
-    #have two pointers
+    # have two pointers
     start = afterL = head
     i = 0
-    while i<=L:
-        afterL= afterL.next
-        i+=1
+    while i < L:
+        afterL = afterL.next
+        i += 1
 
-    #move start and afterL one by one until they match
-    while start != afterL:
+    # move start and afterL one by one until they match
+    while id(start) != id(afterL):
         start = start.next
         afterL = afterL.next
 
+    return start, L
+
+
+# None if there is no cycle
+# node at start of the cycle if cycle is present
+def has_cycle(head: ListNode) -> Optional[ListNode]:
+    start, L = get_cycle_if_present(head)
     return start
 
 
@@ -110,7 +106,4 @@ def has_cycle_wrapper(executor, head, cycle_idx):
 
 
 if __name__ == '__main__':
-    exit(
-        generic_test.generic_test_main('is_list_cyclic.py',
-                                       'is_list_cyclic.tsv',
-                                       has_cycle_wrapper))
+    exit(generic_test.generic_test_main('is_list_cyclic.py', 'is_list_cyclic.tsv', has_cycle_wrapper))
