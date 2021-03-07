@@ -6,7 +6,7 @@ from test_framework.test_utils import enable_executor_hook
 
 
 # Assumes node_to_delete is not tail.
-def deletion_from_list(node_to_delete: ListNode) -> None:
+def deletion_from_list_naive(node_to_delete: ListNode) -> None:
     curr = node_to_delete
     while curr.next.next:
         after = curr.next
@@ -19,6 +19,10 @@ def deletion_from_list(node_to_delete: ListNode) -> None:
     curr.next = None
     return
 
+def deletion_from_list(node_to_delete: ListNode) -> None:
+    curr = node_to_delete
+    curr.data = curr.next.data
+    curr.next = curr.next.next
 
 @enable_executor_hook
 def deletion_from_list_wrapper(executor, head, node_to_delete_idx):
