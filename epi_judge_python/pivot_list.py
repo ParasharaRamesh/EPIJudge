@@ -8,9 +8,52 @@ from test_framework.test_utils import enable_executor_hook
 
 
 def list_pivoting(l: ListNode, x: int) -> Optional[ListNode]:
-    # TODO - you fill in here.
-    return None
+    if l == None:
+        return None
 
+    lesserHead = lesserTail = None
+    equalHead = equalTail = None
+    higherHead = higherTail = None
+
+    curr = l
+    while curr:
+        after = curr.next
+        curr.next = None
+
+        if curr.data < x:
+            if lesserHead == None:
+                lesserHead = lesserTail = curr
+            else:
+                lesserTail.next = curr
+                lesserTail = curr
+        elif curr.data == x:
+            if equalHead == None:
+                equalHead = equalTail = curr
+            else:
+                equalTail.next = curr
+                equalTail = curr
+        else:
+            if higherHead == None:
+                higherHead = higherTail = curr
+            else:
+                higherTail.next = curr
+                higherTail = curr
+        curr = after
+
+    #do the connections
+    if lesserTail:
+        if equalHead:
+            lesserTail.next = equalHead
+            equalTail.next = higherHead
+        elif higherHead:
+            lesserTail.next = higherHead
+        return lesserHead
+    elif equalTail:
+        if higherHead:
+            equalTail.next = higherHead
+        return equalHead
+    elif higherTail:
+        return higherHead
 
 def linked_to_list(l):
     v = list()
@@ -48,6 +91,4 @@ def list_pivoting_wrapper(executor, l, x):
 
 
 if __name__ == '__main__':
-    exit(
-        generic_test.generic_test_main('pivot_list.py', 'pivot_list.tsv',
-                                       list_pivoting_wrapper))
+    exit(generic_test.generic_test_main('pivot_list.py', 'pivot_list.tsv',list_pivoting_wrapper))
