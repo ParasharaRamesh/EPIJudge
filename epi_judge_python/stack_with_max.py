@@ -1,23 +1,39 @@
 from test_framework import generic_test
 from test_framework.test_failure import TestFailure
-
+from math import *
 
 class Stack:
+    def __init__(self):
+        self.stack = []
+
+    def encode(self, ele, max):
+        return f"{int(ele)}|{int(max)}"
+
+    def decode(self, val):
+        encodings = val.split("|")
+        encodings = list(map(lambda x: int(x), encodings))
+        return encodings
+
     def empty(self) -> bool:
-        # TODO - you fill in here.
-        return True
+        return len(self.stack) == 0
 
     def max(self) -> int:
-        # TODO - you fill in here.
-        return 0
+        currVal = self.stack[-1]
+        _, currMax = self.decode(currVal)
+        return currMax
 
     def pop(self) -> int:
-        # TODO - you fill in here.
-        return 0
+        topVal = self.stack.pop(-1)
+        topEle, _ = self.decode(topVal)
+        return topEle
 
     def push(self, x: int) -> None:
-        # TODO - you fill in here.
-        return
+        if self.empty():
+            self.stack.append(self.encode(x, x))
+        else:
+            currVal = self.stack[-1]
+            _, currMax = self.decode(currVal)
+            self.stack.append(self.encode(x, max(x, currMax)))
 
 
 def stack_tester(ops):
@@ -51,6 +67,4 @@ def stack_tester(ops):
 
 
 if __name__ == '__main__':
-    exit(
-        generic_test.generic_test_main('stack_with_max.py',
-                                       'stack_with_max.tsv', stack_tester))
+    exit(generic_test.generic_test_main('stack_with_max.py','stack_with_max.tsv', stack_tester))
