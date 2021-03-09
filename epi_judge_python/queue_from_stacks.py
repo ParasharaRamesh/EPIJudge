@@ -3,13 +3,22 @@ from test_framework.test_failure import TestFailure
 
 
 class Queue:
+    def __init__(self):
+        self.enqStack = []
+        self.deqStack = []
+
     def enqueue(self, x: int) -> None:
-        # TODO - you fill in here.
-        return
+        self.enqStack.append(x)
+
+    def fill(self, s1, s2):
+        while s1:
+            s2.append(s1.pop())
 
     def dequeue(self) -> int:
-        # TODO - you fill in here.
-        return 0
+        self.fill(self.enqStack, self.deqStack)
+        dequeuedElement = self.deqStack.pop()
+        self.fill(self.deqStack, self.enqStack)
+        return dequeuedElement
 
 
 def queue_tester(ops):
