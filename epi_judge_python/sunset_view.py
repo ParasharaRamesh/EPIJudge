@@ -4,8 +4,15 @@ from test_framework import generic_test
 
 
 def examine_buildings_with_sunset(sequence: Iterator[int]) -> List[int]:
-    # TODO - you fill in here.
-    return []
+    currMax = 0
+    sunset = []
+    n = len(sequence)
+    for i,building in enumerate(reversed(sequence)):
+        if building > currMax:
+            sunset.append(n-i-1)
+            currMax = building
+
+    return sunset
 
 
 def examine_buildings_with_sunset_wrapper(sequence):
@@ -13,6 +20,4 @@ def examine_buildings_with_sunset_wrapper(sequence):
 
 
 if __name__ == '__main__':
-    exit(
-        generic_test.generic_test_main('sunset_view.py', 'sunset_view.tsv',
-                                       examine_buildings_with_sunset))
+    exit(generic_test.generic_test_main('sunset_view.py', 'sunset_view.tsv',examine_buildings_with_sunset))
