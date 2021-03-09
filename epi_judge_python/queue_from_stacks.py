@@ -15,9 +15,9 @@ class Queue:
             s2.append(s1.pop())
 
     def dequeue(self) -> int:
-        self.fill(self.enqStack, self.deqStack)
+        if not self.deqStack:
+            self.fill(self.enqStack, self.deqStack)
         dequeuedElement = self.deqStack.pop()
-        self.fill(self.deqStack, self.enqStack)
         return dequeuedElement
 
 
