@@ -1,23 +1,20 @@
 from test_framework import generic_test
 from test_framework.test_failure import TestFailure
-
+from collections import deque
 
 class Queue:
     def __init__(self, capacity: int) -> None:
-        # TODO - you fill in here.
-        return
+        self.capacity = capacity
+        self.Q = deque()
 
     def enqueue(self, x: int) -> None:
-        # TODO - you fill in here.
-        return
+        self.Q.append(x)
 
     def dequeue(self) -> int:
-        # TODO - you fill in here.
-        return 0
+        return self.Q.popleft()
 
     def size(self) -> int:
-        # TODO - you fill in here.
-        return 0
+        return len(self.Q)
 
 
 def queue_tester(ops):
@@ -43,6 +40,4 @@ def queue_tester(ops):
 
 
 if __name__ == '__main__':
-    exit(
-        generic_test.generic_test_main('circular_queue.py',
-                                       'circular_queue.tsv', queue_tester))
+    exit(generic_test.generic_test_main('circular_queue.py','circular_queue.tsv', queue_tester))
