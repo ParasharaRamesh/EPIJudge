@@ -28,6 +28,8 @@ def shortest_equivalent_path(path: str) -> str:
 
 
 if __name__ == '__main__':
+    print(shortest_equivalent_path("/foo/../foo/./../"))
+    print(shortest_equivalent_path("foo/../foo/./../"))
     exit(
         generic_test.generic_test_main('directory_path_normalization.py',
                                        'directory_path_normalization.tsv',
