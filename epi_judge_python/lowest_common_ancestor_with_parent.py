@@ -6,13 +6,32 @@ from test_framework import generic_test
 from test_framework.binary_tree_utils import must_find_node
 from test_framework.test_failure import TestFailure
 from test_framework.test_utils import enable_executor_hook
+from lowest_common_ancestor import isNodePresent
 
 
-def lca(node0: BinaryTreeNode,
-        node1: BinaryTreeNode) -> Optional[BinaryTreeNode]:
-    # TODO - you fill in here.
-    return None
+def lca(node0: BinaryTreeNode, node1: BinaryTreeNode) -> Optional[BinaryTreeNode]:
+    #one of it is the root
+    if node0.parent == None:
+        return node0
+    if node1.parent == None:
+        return node1
 
+    currLeft, currRight = node0, node1
+
+    while currLeft != currRight:
+        isRightInLeft = isNodePresent(currRight,currLeft)
+        isLeftInRight = isNodePresent(currLeft,currRight)
+
+        if isRightInLeft and not isLeftInRight:
+            return currLeft
+        if isLeftInRight and not isRightInLeft:
+            return currRight
+
+        currLeft = currLeft.parent
+        currRight = currRight.parent
+
+
+    return currLeft
 
 @enable_executor_hook
 def lca_wrapper(executor, tree, node0, node1):
@@ -26,7 +45,4 @@ def lca_wrapper(executor, tree, node0, node1):
 
 
 if __name__ == '__main__':
-    exit(
-        generic_test.generic_test_main('lowest_common_ancestor_with_parent.py',
-                                       'lowest_common_ancestor.tsv',
-                                       lca_wrapper))
+    exit(generic_test.generic_test_main('lowest_common_ancestor_with_parent.py', 'lowest_common_ancestor.tsv',lca_wrapper))
