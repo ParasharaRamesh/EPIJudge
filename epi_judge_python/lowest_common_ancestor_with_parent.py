@@ -9,7 +9,7 @@ from test_framework.test_utils import enable_executor_hook
 from lowest_common_ancestor import isNodePresent
 
 
-def lca(node0: BinaryTreeNode, node1: BinaryTreeNode) -> Optional[BinaryTreeNode]:
+def lca_with_parent_naive(node0: BinaryTreeNode, node1: BinaryTreeNode) -> Optional[BinaryTreeNode]:
     #one of it is the root
     if node0.parent == None:
         return node0
@@ -32,6 +32,40 @@ def lca(node0: BinaryTreeNode, node1: BinaryTreeNode) -> Optional[BinaryTreeNode
 
 
     return currLeft
+
+def getDepthWithParentPointers(node):
+    curr = node
+    depth = 0
+    while curr:
+        curr = curr.parent
+        depth += 1
+    return depth
+
+
+def traverseUpwards(node, toTraverse):
+    curr = node
+    for i in range(toTraverse):
+        curr = curr.parent
+    return curr
+
+
+def lca(node0: BinaryTreeNode, node1: BinaryTreeNode) -> Optional[BinaryTreeNode]:
+    depth0 = getDepthWithParentPointers(node0)
+    depth1 = getDepthWithParentPointers(node1)
+    diff = depth0 - depth1
+
+    curr0 = node0
+    curr1 = node1
+
+    if diff > 0:
+        curr0 = traverseUpwards(curr0, diff)
+    elif diff < 0:
+        curr1 = traverseUpwards(curr1, -diff)
+
+    while curr0 and curr1 and curr0 != curr1:
+        curr0 = curr0.parent
+        curr1 = curr1.parent
+    return curr0
 
 @enable_executor_hook
 def lca_wrapper(executor, tree, node0, node1):
