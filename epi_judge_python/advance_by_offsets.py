@@ -36,8 +36,13 @@ def can_reach_end_top_down(A: List[int]) -> bool:
 def can_reach_end(A: List[int]) -> bool:
     i = 0
     furthest_reach = 0
-    while i < len(A)-1:
-        furthest_reach = max(furthest_reach, A[i] + i if A[i] > 0 else A[i])
+    for i in range(len(A)-1):
+        jump = 0
+        if A[i] > 0 :
+            jump = A[i] + i
+        elif i == furthest_reach:
+            return False
+        furthest_reach = max(furthest_reach, jump)
         i+=1
     return furthest_reach >= len(A) -1
 
@@ -63,7 +68,4 @@ def can_reach_end(A: List[int]) -> bool:
 
 
 if __name__ == '__main__':
-    exit(
-        generic_test.generic_test_main('advance_by_offsets.py',
-                                       'advance_by_offsets.tsv',
-                                       can_reach_end))
+    exit(generic_test.generic_test_main('advance_by_offsets.py','advance_by_offsets.tsv', can_reach_end))
