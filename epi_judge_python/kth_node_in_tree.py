@@ -14,9 +14,27 @@ class BinaryTreeNode:
         self.size = size
 
 
-def find_kth_node_binary_tree(tree: BinaryTreeNode,
-                              k: int) -> Optional[BinaryTreeNode]:
-    # TODO - you fill in here.
+def find_kth_node_binary_tree(tree: BinaryTreeNode,k: int) -> Optional[BinaryTreeNode]:
+    if tree:
+        if tree.left == None and tree.right == None and k == 1:
+            return tree
+        elif tree.left:
+            leftSize = tree.left.size
+            if leftSize + 1 == k:
+                return tree
+            elif leftSize + 1 > k:
+                # do something with left tree
+                return find_kth_node_binary_tree(tree.left, k)
+            elif leftSize + 1 < k:
+                # do something with right tree
+                return find_kth_node_binary_tree(tree.right, k - leftSize - 1)
+        elif tree.right:
+            if k == 1:
+                return tree
+            else:
+                # do something with right tree
+                return find_kth_node_binary_tree(tree.right, k - 1)
+
     return None
 
 
