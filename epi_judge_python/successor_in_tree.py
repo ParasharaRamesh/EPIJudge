@@ -7,8 +7,26 @@ from test_framework.binary_tree_utils import must_find_node
 from test_framework.test_utils import enable_executor_hook
 
 
+def leftMostNode(node):
+    curr = node
+    while curr.left != None:
+        curr = curr.left
+    return curr
+
+def parentWhoseLeftIsThis(node):
+    curr = node
+    parent = node.parent
+    while parent and parent.left != curr:
+        curr = parent
+        parent = parent.parent
+    return parent
+
+
 def find_successor(node: BinaryTreeNode) -> Optional[BinaryTreeNode]:
-    # TODO - you fill in here.
+    if node:
+        if node.right:
+            return leftMostNode(node.right)
+        return parentWhoseLeftIsThis(node)
     return None
 
 
