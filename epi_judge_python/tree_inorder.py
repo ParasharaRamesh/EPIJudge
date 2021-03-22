@@ -25,7 +25,6 @@ def inorder_traversal(tree: BinaryTreeNode) -> List[int]:
 
         if currNode == None or currState == 3:
             stackFrames.pop()
-            continue
         elif currState == 0:
             stackFrames[-1][1] += 1
             stackFrames.append([currNode.left, 0])
