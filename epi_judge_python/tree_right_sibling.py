@@ -31,8 +31,19 @@ def binary_tree_depth_order_with_next_nodes(tree: BinaryTreeNode) -> List[List[B
     return list(depths)
 
 
-def construct_right_sibling(tree: BinaryTreeNode) -> None:
+def construct_right_sibling_with_level_order_approach(tree: BinaryTreeNode) -> None:
     binary_tree_depth_order_with_next_nodes(tree)
+
+def construct_right_sibling(tree: BinaryTreeNode) -> None:
+    if tree:
+        if tree.left:
+            tree.left.next = tree.right
+        if tree.next and tree.right:
+            tree.right.next = tree.next.left
+        if tree.left:
+            construct_right_sibling(tree.left)
+        if tree.right:
+            construct_right_sibling(tree.right)
 
 def traverse_next(node):
     while node:
@@ -68,7 +79,4 @@ def construct_right_sibling_wrapper(executor, tree):
 
 
 if __name__ == '__main__':
-    exit(
-        generic_test.generic_test_main('tree_right_sibling.py',
-                                       'tree_right_sibling.tsv',
-                                       construct_right_sibling_wrapper))
+    exit(generic_test.generic_test_main('tree_right_sibling.py','tree_right_sibling.tsv',construct_right_sibling_wrapper))
