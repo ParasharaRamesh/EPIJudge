@@ -1,4 +1,6 @@
 import functools
+from collections import deque
+from typing import List
 
 from test_framework import generic_test
 from test_framework.test_utils import enable_executor_hook
@@ -11,11 +13,26 @@ class BinaryTreeNode:
         self.right = None
         self.next = None  # Populates this field.
 
+def binary_tree_depth_order_with_next_nodes(tree: BinaryTreeNode) -> List[List[BinaryTreeNode]]:
+    depthQueue = deque([])
+    depths = []
+    if tree:
+        depthQueue.append((tree, 1))
+        while len(depthQueue) != 0:
+            currNode, currHeight = depthQueue.pop()
+            if currNode != None:
+                if len(depths) < currHeight:
+                    depths.append([])
+                if len(depths[currHeight - 1]) > 0:
+                    depths[currHeight - 1][-1].next = currNode
+                depths[currHeight - 1].append(currNode)
+                depthQueue.append((currNode.right, currHeight + 1))
+                depthQueue.append((currNode.left, currHeight + 1))
+    return list(depths)
+
 
 def construct_right_sibling(tree: BinaryTreeNode) -> None:
-    # TODO - you fill in here.
-    return
-
+    binary_tree_depth_order_with_next_nodes(tree)
 
 def traverse_next(node):
     while node:
