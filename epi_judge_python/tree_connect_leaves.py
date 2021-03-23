@@ -7,9 +7,18 @@ from test_framework.test_failure import TestFailure
 from test_framework.test_utils import enable_executor_hook
 
 
+def computeLeaves(tree, leaves):
+    if tree:
+        if tree.left == None and tree.right == None:
+            leaves.append(tree)
+            return
+        computeLeaves(tree.left, leaves)
+        computeLeaves(tree.right, leaves)
+
 def create_list_of_leaves(tree: BinaryTreeNode) -> List[BinaryTreeNode]:
-    # TODO - you fill in here.
-    return []
+    leaves = []
+    computeLeaves(tree, leaves)
+    return leaves
 
 
 @enable_executor_hook
@@ -22,7 +31,4 @@ def create_list_of_leaves_wrapper(executor, tree):
 
 
 if __name__ == '__main__':
-    exit(
-        generic_test.generic_test_main('tree_connect_leaves.py',
-                                       'tree_connect_leaves.tsv',
-                                       create_list_of_leaves_wrapper))
+    exit(generic_test.generic_test_main('tree_connect_leaves.py','tree_connect_leaves.tsv',create_list_of_leaves_wrapper))
