@@ -4,7 +4,7 @@ from typing import Iterator, List
 
 from test_framework import generic_test
 from test_framework.test_utils import enable_executor_hook
-
+from heapq import *
 
 class Star:
     def __init__(self, x: float, y: float, z: float) -> None:
@@ -28,8 +28,15 @@ class Star:
 
 
 def find_closest_k_stars(stars: Iterator[Star], k: int) -> List[Star]:
-    # TODO - you fill in here.
-    return []
+    heap = []
+    nearest = []
+    while True:
+        try:
+            heappush(heap, next(stars))
+        except StopIteration:
+            break
+
+    return nsmallest(k, heap)
 
 
 def comp(expected_output, output):
